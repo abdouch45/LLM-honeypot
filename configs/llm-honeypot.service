@@ -1,0 +1,16 @@
+[Unit]
+Description=Cowrie Honeypot Service
+After=network.target
+
+[Service]
+User=cowrie
+Group=cowrie
+WorkingDirectory=/home/cowrie/cowrie
+ExecStart=/home/cowrie/cowrie/cowrie-env/bin/python /home/cowrie/cowrie/cowrie-env/bin/twistd --umask 0022 --nodaemon --pidfile= -l - cowrie
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

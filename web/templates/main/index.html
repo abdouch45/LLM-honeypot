@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>LLM Agent Honeypot: Real-World AI Threat Analysis</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0B1121;
+      color: #A0AEC0;
+    }
+  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
+
+  <!-- Chart.js (v3 or v4) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Open Graph / Twitter Cards (example) -->
+  <meta property="og:title" content="LLM Agent Honeypot: Real-World AI Threat Analysis">
+  <meta property="og:description" content="Discover how the LLM Honeypot captures AI-Hacking Agents in the wild.">
+  <meta property="og:image" content="http://llm-honeypot.reworr.com/image.webp">
+  <meta property="og:url" content="http://llm-honeypot.reworr.com">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LLM Agent Honeypot: Real-World AI Threat Analysis">
+  <meta name="twitter:description" content="Discover how the LLM Honeypot captures AI-Hacking Agents in the wild.">
+  <meta name="twitter:image" content="http://llm-honeypot.reworr.com/image.webp">
+</head>
+
+<body class="min-h-screen">
+
+  <!-- HEADER -->
+  <header class="bg-[#0B1121] py-6 px-4">
+    <div class="flex justify-between items-center max-w-7xl mx-auto">
+      <a href="/" class="text-3xl font-bold text-blue-400 hover:text-blue-300 transition-colors">
+        LLM Agent Honeypot
+      </a>
+      <nav>
+        <a href="/" class="text-lg text-blue-400 hover:text-blue-300 transition-colors mr-6">Main</a>
+        <a href="/explainer" class="text-lg text-blue-400 hover:text-blue-300 transition-colors mr-6">Explainer</a>
+        <a href="https://arxiv.org/abs/2410.13919" class="text-lg text-blue-400 hover:text-blue-300 transition-colors mr-6">White Paper</a>
+        <a href="https://github.com/PalisadeResearch/llm-honeypot" class="text-lg text-blue-400 hover:text-blue-300 transition-colors">
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <!-- Title Section -->
+    <section class="text-center mb-16">
+      <h1 class="text-6xl font-extrabold text-blue-400 mb-4">LLM Agent Honeypot</h1>
+      <p class="text-2xl text-blue-300">Unveiling Real-World AI Threats</p>
+    </section>
+
+    <!-- Project Overview -->
+    <section class="mb-12 bg-gray-800 rounded-lg p-8 shadow-lg border border-blue-500/50">
+      <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Project Overview</h2>
+      <p class="mb-6 text-lg text-gray-300">
+        The <strong class="text-white">LLM-Hack Agent Honeypot</strong> is a project designed to monitor, capture, and analyze
+        autonomous AI Hacking Agents <b>in the real world.</b>
+      </p>
+
+      <div class="mb-8">
+        <h3 class="text-2xl font-bold text-blue-300 mb-4">How It Works:</h3>
+        <ol class="list-decimal list-inside space-y-4 text-gray-300">
+          <li>
+            <span class="font-semibold text-white">Simulation:</span> We deploy a simulated "vulnerable" service to attract potential threats.
+          </li>
+          <li>
+            <span class="font-semibold text-white">Catching Mechanisms:</span> This service incorporates specific counter-techniques
+            designed to detect and capture AI-Hacking Agents.
+          </li>
+          <li>
+            <span class="font-semibold text-white">Monitoring:</span> We monitor and log all interactions, waiting for potential attacks
+            from LLM-powered agents.
+          </li>
+        </ol>
+      </div>
+
+      <hr class="border-gray-600 mb-8">
+
+      <div>
+        <h3 class="text-2xl font-bold text-blue-300 mb-4">Why?</h3>
+        <p class="text-gray-300">
+          Our objectives aim to <b>improve awareness of AI Hacking Agents</b> and their current state of risks by
+          understanding their real-world usage and studying their algorithms and behavior <b>in the wild</b>.
+        </p>
+      </div>
+    </section>
+
+    <!-- High-Level Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <!-- Total Attacks -->
+      <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-green-500/50">
+        <h3 class="text-2xl font-bold text-green-400 mb-2">Total Interactions</h3>
+        <p class="text-5xl font-bold text-green-500"><span id="totalAttacks"><%= total_attacks %></span></p>
+        <p class="text-sm text-gray-400 mt-2">Attempts to engage with our honeypot</p>
+      </div>
+      <!-- Potential AI Agents -->
+      <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-yellow-500/50">
+        <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents</h3>
+        <p class="text-5xl font-bold text-yellow-500"><span id="llmAgents"><%= llm_hacking_agents %></span></p>
+        <p class="text-sm text-gray-400 mt-2">Passed prompt injection detection</p>
+      </div>
+      <!-- Verified AI Agents -->
+      <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
+        <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents</h3>
+        <p class="text-5xl font-bold text-red-500"><span id="verifiedAgents"><%= verified_llm_agents %></span></p>
+        <p class="text-sm text-gray-400 mt-2">Passed both prompt injection and temporal analysis</p>
+      </div>
+    </div>
+
+    <!-- Dual-Axis Chart for absolute attacks -->
+    <div class="bg-gray-800 rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg mb-12 border border-gray-700/50">
+      <div class="flex justify-between items-start mb-2">
+        <h3 class="text-xl sm:text-2xl font-bold text-blue-300">Monthly Attacks: AI vs. Total</h3>
+        <% if (last_month_incomplete) { %>
+        <span class="inline-flex items-center text-xs sm:text-sm text-gray-300 bg-gray-700/60 px-3 py-1.5 rounded-lg border border-gray-600/50">
+          <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+          <%= month_labels[month_labels.length-1] %> still in progress
+        </span>
+        <% } %>
+      </div>
+      <p class="text-sm text-gray-400 mb-4 sm:mb-6">Total monthly attacks on our honeypot compared to detected AI-powered hacking agents.</p>
+      <div class="relative w-full">
+        <canvas id="monthlyDualAxisChart"></canvas>
+      </div>
+    </div>
+
+    <!-- AI Agents breakdown -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <div class="space-y-6">
+        <!-- Potential AI Agents Origins -->
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-yellow-500/50">
+          <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents Origins</h3>
+          <ul class="space-y-2">
+            <% top_ai_agents.forEach(function(item){ var ip = item[0]; var count = item[1]; %>
+            <li class="flex justify-between items-center">
+              <span><%= ip %></span>
+              <span class="font-semibold text-yellow-300"><%= count %> attempts</span>
+            </li>
+            <% }); %>
+          </ul>
+        </div>
+        <!-- Potential AI Agents Geolocation -->
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-yellow-500/50">
+          <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents Distribution</h3>
+          <ul class="space-y-2">
+            <% ai_geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
+            <li class="flex justify-between items-center">
+              <span><%= country %></span>
+              <span class="font-semibold text-yellow-300"><%= percent %>%</span>
+            </li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Confirmed AI Agents Origins -->
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
+          <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents Origins</h3>
+          <ul class="space-y-2">
+            <% top_verified_ai_agents.forEach(function(item){ var ip = item[0]; var count = item[1]; %>
+            <li class="flex justify-between items-center">
+              <span><%= ip %></span>
+              <span class="font-semibold text-red-300"><%= count %> attempts</span>
+            </li>
+            <% }); %>
+          </ul>
+        </div>
+        <!-- Confirmed AI Agents Geolocation -->
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
+          <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents Distribution</h3>
+          <ul class="space-y-2">
+            <% verified_ai_geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
+            <li class="flex justify-between items-center">
+              <span><%= country %></span>
+              <span class="font-semibold text-red-300"><%= percent %>%</span>
+            </li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Threat Origins + Global Distribution -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <!-- Top Threat Origins -->
+      <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+        <h3 class="text-2xl font-bold text-blue-400 mb-4">Top Threat Origins</h3>
+        <ul class="space-y-2">
+          <% top_attackers.forEach(function(item){ var ip = item[0]; var count = item[1]; %>
+          <li class="flex justify-between items-center">
+            <span><%= ip %></span>
+            <span class="font-semibold text-blue-300"><%= count %> attempts</span>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+      <!-- Global Threat Distribution -->
+      <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+        <h3 class="text-2xl font-bold text-yellow-400 mb-4">Global Threat Distribution</h3>
+        <ul class="space-y-2">
+          <% geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
+          <li class="flex justify-between items-center">
+            <span><%= country %></span>
+            <span class="font-semibold text-yellow-300"><%= percent %>%</span>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Ongoing Research -->
+    <section class="bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
+      <h2 class="text-3xl font-bold text-blue-300 mb-4">Ongoing Research</h2>
+      <p class="mb-4">
+        Our project continues to evolve as we gather more data on real-world AI threat actors. We're constantly
+        refining our methods to stay ahead of emerging attack vectors and contribute valuable insights to the
+        cybersecurity community.
+      </p>
+      <p>
+        By studying these AI agents in action, we're not just theorizing about potential risks—we're documenting
+        and analyzing actual threats as they unfold. This real-time approach allows us to develop more effective
+        defenses and push the boundaries of AI security research.
+      </p>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <div class="text-center text-xs text-gray-500 p-4 bg-gray-800">
+    Contact:
+    <a href="mailto:reworr@palisaderesearch.org" class="text-blue-400 hover:text-blue-300">
+      reworr@palisaderesearch.org
+    </a>
+    |
+    <a href="https://www.linkedin.com/in/reworr/" class="text-blue-400 hover:text-blue-300" target="_blank" rel="noopener noreferrer">
+      LinkedIn
+    </a>
+    |
+    <a href="https://huggingface.co/datasets/palisaderesearch/LLM-Honeypot-Logs" class="text-blue-400 hover:text-blue-300" target="_blank" rel="noopener noreferrer">
+      Access Research Data
+    </a>
+  </div>
+
+  <!-- CHART SCRIPT -->
+  <script>
+    // Data injected by EJS
+    const monthLabels = <%- JSON.stringify(month_labels) %>;
+    const totalAttacksData = <%- JSON.stringify(monthly_attacks) %>;
+    const aiAttacksData = <%- JSON.stringify(monthly_ai_attacks) %>;
+    const lastMonthIncomplete = <%- JSON.stringify(last_month_incomplete) %>;
+
+    // Responsive helpers
+    const isMobile = () => window.innerWidth < 640;
+    const isTablet = () => window.innerWidth >= 640 && window.innerWidth < 1024;
+
+    // Compact number formatter (1M, 800K, etc.)
+    function formatCompact(value) {
+      if (value >= 1000000) {
+        return (value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1) + 'M';
+      } else if (value >= 1000) {
+        return (value / 1000).toFixed(0) + 'K';
+      }
+      return value.toString();
+    }
+
+    // Chart configuration factory
+    function getChartConfig() {
+      const mobile = isMobile();
+      const pointRadius = mobile ? 3 : 4;
+      const borderWidth = mobile ? 2 : 2.5;
+
+      return {
+        type: 'line',
+        data: {
+          labels: monthLabels,
+          datasets: [
+            {
+              label: 'Total Attacks',
+              data: totalAttacksData,
+              yAxisID: 'yTotal',
+              borderColor: 'rgb(59, 130, 246)',
+              backgroundColor: 'rgb(59, 130, 246)',
+              borderWidth: borderWidth,
+              pointRadius: pointRadius,
+              pointHoverRadius: pointRadius + 2,
+              pointBackgroundColor: 'rgb(59, 130, 246)',
+              pointBorderColor: '#1e293b',
+              pointBorderWidth: mobile ? 1.5 : 2,
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgb(59, 130, 246)',
+              pointHoverBorderWidth: 2,
+              tension: 0.3,
+              segment: {
+                borderDash: (ctx) => {
+                  if (lastMonthIncomplete && ctx.p0DataIndex === totalAttacksData.length - 2 && ctx.p1DataIndex === totalAttacksData.length - 1) {
+                    return [6, 6];
+                  }
+                  return undefined;
+                }
+              }
+            },
+            {
+              label: 'AI Attacks',
+              data: aiAttacksData,
+              yAxisID: 'yAI',
+              borderColor: 'rgb(239, 68, 68)',
+              backgroundColor: 'rgb(239, 68, 68)',
+              borderWidth: borderWidth,
+              pointRadius: pointRadius,
+              pointHoverRadius: pointRadius + 2,
+              pointBackgroundColor: 'rgb(239, 68, 68)',
+              pointBorderColor: '#1e293b',
+              pointBorderWidth: mobile ? 1.5 : 2,
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgb(239, 68, 68)',
+              pointHoverBorderWidth: 2,
+              tension: 0.3,
+              segment: {
+                borderDash: (ctx) => {
+                  if (lastMonthIncomplete && ctx.p0DataIndex === aiAttacksData.length - 2 && ctx.p1DataIndex === aiAttacksData.length - 1) {
+                    return [6, 6];
+                  }
+                  return undefined;
+                }
+              }
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          aspectRatio: mobile ? 1.3 : (isTablet() ? 1.8 : 2.2),
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            yTotal: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              beginAtZero: true,
+              title: {
+                display: !mobile,
+                text: 'Total Attacks',
+                color: '#3b82f6',
+                font: { size: 13, weight: '600' },
+                padding: { bottom: 8 }
+              },
+              ticks: {
+                color: '#3b82f6',
+                font: { size: mobile ? 10 : 11 },
+                padding: mobile ? 4 : 8,
+                maxTicksLimit: mobile ? 6 : 8,
+                callback: (value) => formatCompact(value)
+              },
+              grid: { color: 'rgba(148, 163, 184, 0.08)', drawBorder: false },
+              border: { display: false }
+            },
+            yAI: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              beginAtZero: true,
+              title: {
+                display: !mobile,
+                text: 'AI Attacks',
+                color: '#ef4444',
+                font: { size: 13, weight: '600' },
+                padding: { bottom: 8 }
+              },
+              ticks: {
+                color: '#ef4444',
+                font: { size: mobile ? 10 : 11 },
+                padding: mobile ? 4 : 8,
+                stepSize: 1,
+                callback: (value) => Number.isInteger(value) ? value : ''
+              },
+              grid: { drawOnChartArea: false, drawBorder: false },
+              border: { display: false }
+            },
+            x: {
+              ticks: {
+                color: '#94a3b8',
+                font: { size: mobile ? 9 : 11 },
+                padding: mobile ? 4 : 8,
+                maxRotation: mobile ? 55 : 45,
+                minRotation: mobile ? 35 : 0,
+                autoSkip: true,
+                maxTicksLimit: mobile ? 6 : 16
+              },
+              grid: { color: 'rgba(148, 163, 184, 0.08)', drawBorder: false },
+              border: { display: false }
+            }
+          },
+          plugins: {
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleColor: '#f1f5f9',
+              bodyColor: '#cbd5e1',
+              borderColor: 'rgba(148, 163, 184, 0.2)',
+              borderWidth: 1,
+              padding: mobile ? 8 : 12,
+              cornerRadius: 8,
+              titleFont: { size: mobile ? 11 : 13, weight: '600' },
+              bodyFont: { size: mobile ? 10 : 12 },
+              bodySpacing: 6,
+              usePointStyle: true,
+              callbacks: {
+                label: (context) => ` ${context.dataset.label}: ${context.parsed.y.toLocaleString()}`
+              }
+            },
+            legend: {
+              position: 'top',
+              align: 'center',
+              labels: {
+                color: '#cbd5e1',
+                font: { size: mobile ? 10 : 12 },
+                usePointStyle: true,
+                pointStyle: 'circle',
+                padding: mobile ? 10 : 20,
+                boxWidth: 8,
+                boxHeight: 8
+              }
+            }
+          }
+        }
+      };
+    }
+
+    // Initialize chart
+    const ctx = document.getElementById('monthlyDualAxisChart').getContext('2d');
+    let chart = new Chart(ctx, getChartConfig());
+    window.chart = chart;
+
+    // Debounced resize handler to recreate chart with new config
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        chart.destroy();
+        chart = new Chart(ctx, getChartConfig());
+      }, 250);
+    });
+  </script>
+
+  <!-- Live-reload: listen for server-sent events and reload when site regenerates -->
+  <script>
+    (function(){
+      function rebuildList(el, items, klass){
+        if(!el) return;
+        el.innerHTML = '';
+        items.forEach(item=>{
+          const li = document.createElement('li');
+          li.className = 'flex justify-between items-center ' + (klass||'');
+          if(Array.isArray(item)){
+            li.innerHTML = `<span>${item[0]}</span><span class="font-semibold">${item[1]} ${item[1]===1? 'attempt':'attempts'}</span>`;
+          } else {
+            li.textContent = String(item);
+          }
+          el.appendChild(li);
+        });
+      }
+
+      function applyUpdate(ctx){
+        try{
+          // update summary counters
+          document.getElementById('totalAttacks').textContent = ctx.total_attacks || 0;
+          document.getElementById('llmAgents').textContent = ctx.llm_hacking_agents || 0;
+          document.getElementById('verifiedAgents').textContent = ctx.verified_llm_agents || 0;
+
+          // update chart
+          if(window.chart && ctx.month_labels && ctx.monthly_attacks && ctx.monthly_ai_attacks){
+            window.chart.data.labels = ctx.month_labels;
+            window.chart.data.datasets[0].data = ctx.monthly_attacks;
+            window.chart.data.datasets[1].data = ctx.monthly_ai_attacks;
+            window.chart.update();
+          }
+
+          // update lists
+          const topAttackersEl = document.querySelector('div.bg-gray-800.rounded-lg.p-6.shadow-lg ul');
+          // there are many lists; target by more specific selectors instead
+          const panels = document.querySelectorAll('.grid .bg-gray-800.rounded-lg ul');
+          const lists = {
+            top_attackers: ctx.top_attackers || [],
+            top_ai_agents: ctx.top_ai_agents || [],
+            top_verified_ai_agents: ctx.top_verified_ai_agents || [],
+            geolocation_data: ctx.geolocation_data || [],
+            ai_geolocation_data: ctx.ai_geolocation_data || [],
+            verified_ai_geolocation_data: ctx.verified_ai_geolocation_data || [],
+            geolocation_data_right: ctx.geolocation_data || []
+          };
+
+          // update by matching headings text (robust-ish)
+          document.querySelectorAll('h3').forEach(h=>{
+            const txt = h.textContent && h.textContent.trim();
+            if(!txt) return;
+            const ul = h.parentElement.querySelector('ul');
+            if(!ul) return;
+            if(txt.includes('Top Threat Origins')) rebuildList(ul, ctx.top_attackers || []);
+            else if(txt.includes('Potential AI Agents Origins')) rebuildList(ul, ctx.top_ai_agents || []);
+            else if(txt.includes('Confirmed AI Agents Origins')) rebuildList(ul, ctx.top_verified_ai_agents || []);
+            else if(txt.includes('Potential AI Agents Distribution')) rebuildList(ul, ctx.ai_geolocation_data || []);
+            else if(txt.includes('Confirmed AI Agents Distribution')) rebuildList(ul, ctx.verified_ai_geolocation_data || []);
+            else if(txt.includes('Global Threat Distribution')) rebuildList(ul, ctx.geolocation_data || []);
+          });
+        }catch(e){ console.warn('applyUpdate failed', e); }
+      }
+
+      try{
+        var es = new EventSource('/events');
+        es.onmessage = function(e){
+          try{
+            var msg = JSON.parse(e.data);
+            if(msg && msg.type === 'update' && msg.data){
+              applyUpdate(msg.data);
+            } else if(msg && msg.type === 'reload'){
+              window.location.reload();
+            }
+          }catch(err){ console.warn('SSE parse', err); }
+        };
+        es.onerror = function(){ /* ignore */ };
+      }catch(err){ console.warn('SSE not available', err); }
+    })();
+  </script>
+
+</body>
+
+</html>
