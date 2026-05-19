@@ -4,10 +4,10 @@ services:
       context: ./web
       dockerfile: Dockerfile
     environment:
-      - LOG_DIRECTORY=/home/cowrie/cowrie/var/log/cowrie
+      - LOG_DIRECTORY=/data/cowrie/logs
       - STATS_FILE=/data/stats/honeypot_stats.json
     volumes:
-      - /home/cowrie/cowrie/var/log/cowrie:/home/cowrie/cowrie/var/log/cowrie:ro
+      - /home/e2506292/cowrie/var/log/cowrie:/data/cowrie/logs:ro
       - /var/lib/docker/vol/_data:/data/stats
       - /var/www/honeypot:/www
     ports:

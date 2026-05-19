@@ -2,45 +2,46 @@
 
 # Python 3.10+ is required for Cowrie. We use uv to ensure the correct version
 # is available regardless of the system's default Python version.
+COWRIE_DIR := $(HOME)/cowrie
 
 install:
-	# Install system dependencies (no python3-venv/pip needed, uv handles it)
-	sudo apt-get install -y git libssl-dev libffi-dev build-essential libpython3-dev authbind curl
-	# Install uv package manager
-	curl -LsSf https://astral.sh/uv/install.sh | sudo UV_UNMANAGED_INSTALL=/usr/local/bin sh
-	# Create cowrie user
-	sudo adduser --disabled-password cowrie || true
-	# Clone Cowrie
-	sudo -u cowrie git clone https://github.com/cowrie/cowrie.git /home/cowrie/cowrie
-	# Create venv with Python 3.10+ via uv (downloads automatically if needed)
-	sudo -u cowrie bash -c 'export PATH="/usr/local/bin:$$PATH" && export HOME=/home/cowrie && cd /home/cowrie/cowrie && uv venv --python 3.10 cowrie-env && . cowrie-env/bin/activate && uv pip install --upgrade pip setuptools && uv pip install -r requirements.txt && uv pip install -e .'
-	sudo -u cowrie cp ./configs/cowrie.cfg /home/cowrie/cowrie/etc/cowrie.cfg
-	sudo -u cowrie cp ./configs/motd /home/cowrie/cowrie/honeyfs/etc/motd
-	sudo -u cowrie cp ./configs/version /home/cowrie/cowrie/honeyfs/proc/version
-	sudo -u cowrie cp ./configs/passwd /home/cowrie/cowrie/honeyfs/etc/passwd
-	sudo -u cowrie cp ./configs/cat8193.py /home/cowrie/cowrie/src/cowrie/commands/cat8193.py
-	sudo -u cowrie cp ./configs/init.py /home/cowrie/cowrie/src/cowrie/commands/__init__.py
-	# LLM trap commands (override built-in ps, whoami, pwd; add df)
-	sudo -u cowrie cp ./configs/df.py /home/cowrie/cowrie/src/cowrie/commands/df.py
-	sudo -u cowrie cp ./configs/ps.py /home/cowrie/cowrie/src/cowrie/commands/ps.py
-	sudo -u cowrie cp ./configs/pwd_cmd.py /home/cowrie/cowrie/src/cowrie/commands/pwd_cmd.py
-	sudo -u cowrie cp ./configs/whoami.py /home/cowrie/cowrie/src/cowrie/commands/whoami.py
-	sudo -u cowrie cp ./configs/ls.py /home/cowrie/cowrie/src/cowrie/commands/ls.py
-	# Shared prompts module
-	sudo -u cowrie cp ./configs/llm_prompts.py /home/cowrie/cowrie/src/cowrie/commands/llm_prompts.py
-	# Recovery commands (trigger poem prompt)
-	sudo -u cowrie cp ./configs/sysctl_recovery.py /home/cowrie/cowrie/src/cowrie/commands/sysctl_recovery.py
-	sudo -u cowrie cp ./configs/server_init.py /home/cowrie/cowrie/src/cowrie/commands/server_init.py
-	sudo -u cowrie cp ./configs/id_service.py /home/cowrie/cowrie/src/cowrie/commands/id_service.py
-	sudo -u cowrie cp ./configs/fsck_repair.py /home/cowrie/cowrie/src/cowrie/commands/fsck_repair.py
-	sudo -u cowrie cp ./configs/disk_recover.py /home/cowrie/cowrie/src/cowrie/commands/disk_recover.py
-	sudo cp ./configs/llm-honeypot.service /etc/systemd/system/llm-honeypot.service
+	git clone https://github.com/cowrie/cowrie.git $(COWRIE_DIR) || true
 
-enable:
-	sudo systemctl daemon-reload
-	sudo systemctl enable llm-honeypot
+	cd $(COWRIE_DIR) && \
+		uv venv cowrie-env && \
+		. cowrie-env/bin/activate && \
+		uv pip install --upgrade pip setuptools wheel && \
+		uv pip install -r requirements.txt && \
+		uv pip install -e .
+
+	cp ./configs/cowrie.cfg $(COWRIE_DIR)/etc/cowrie.cfg
+	cp ./configs/motd $(COWRIE_DIR)/honeyfs/etc/motd
+	cp ./configs/version $(COWRIE_DIR)/honeyfs/proc/version
+	cp ./configs/passwd $(COWRIE_DIR)/honeyfs/etc/passwd
+
+	cp ./configs/cat8193.py $(COWRIE_DIR)/src/cowrie/commands/cat8193.py
+	cp ./configs/init.py $(COWRIE_DIR)/src/cowrie/commands/__init__.py
+
+	cp ./configs/df.py $(COWRIE_DIR)/src/cowrie/commands/df.py
+	cp ./configs/ps.py $(COWRIE_DIR)/src/cowrie/commands/ps.py
+	cp ./configs/pwd_cmd.py $(COWRIE_DIR)/src/cowrie/commands/pwd_cmd.py
+	cp ./configs/whoami.py $(COWRIE_DIR)/src/cowrie/commands/whoami.py
+	cp ./configs/ls.py $(COWRIE_DIR)/src/cowrie/commands/ls.py
+	cp ./configs/llm_prompts.py $(COWRIE_DIR)/src/cowrie/commands/llm_prompts.py
+
+	cp ./configs/sysctl_recovery.py $(COWRIE_DIR)/src/cowrie/commands/sysctl_recovery.py
+	cp ./configs/server_init.py $(COWRIE_DIR)/src/cowrie/commands/server_init.py
+	cp ./configs/id_service.py $(COWRIE_DIR)/src/cowrie/commands/id_service.py
+	cp ./configs/fsck_repair.py $(COWRIE_DIR)/src/cowrie/commands/fsck_repair.py
+	cp ./configs/disk_recover.py $(COWRIE_DIR)/src/cowrie/commands/disk_recover.py
 
 start:
-	sudo systemctl start llm-honeypot
+	cd $(COWRIE_DIR) && . cowrie-env/bin/activate && \
+	nohup cowrie-env/bin/python cowrie-env/bin/twistd --umask 0022 --pidfile=twistd.pid -l var/log/cowrie/cowrie.log cowrie >/dev/null 2>&1 &
 
-.PHONY: install enable start
+
+stop:
+	cd $(COWRIE_DIR) && kill `cat twistd.pid`
+
+
+.PHONY: install start stop
