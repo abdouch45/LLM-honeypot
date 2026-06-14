@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Administration Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="container">
+            <h1 class="logo">National Citizen Services Portal</h1>
+            <p class="subtitle">Internal Administrative Dashboard</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="dashboard-card">
+
+            <div class="status-banner">
+                <h2>Welcome, Admin</h2>
+            </div>
+
+            <h2>Department Overview</h2>
+
+            <div class="status-grid">
+
+                <div class="status-item">
+                    <h3>Records Administration</h3>
+                    <p>Status: Operational</p>
+                </div>
+
+                <div class="status-item">
+                    <h3>Active Tickets</h3>
+                    <p>number: 0</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h2>Notice upload form</h2>
+
+            <p class="section-text">
+                Authorized staff may upload updated public notices and documents here.
+            </p>
+
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+
+                <div class="form-group">
+                    <label for="file">Select Document</label>
+
+                    <input
+                        id="file"
+                        type="file"
+                        name="file"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="upload-btn">
+                    Submit Document
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
+

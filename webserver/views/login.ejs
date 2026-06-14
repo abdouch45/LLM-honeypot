@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Login</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="container">
+            <h1 class="logo">National Citizen Services Portal</h1>
+            <p class="subtitle">Secure Employee Access</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="login-card">
+
+            <h2>Employee Login</h2>
+
+            <p class="login-text">
+                Authorized personnel may access internal administrative
+                services using their assigned credentials.
+            </p>
+
+            <% if (error) { %>
+                <div class="error-box">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form method="POST" class="login-form">
+
+                <div class="form-group">
+                    <label for="username">Employee ID</label>
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="Enter employee ID"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Enter password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Sign In
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</body>
+       <!-- some functionalities are under development to activate them for your session please send a get request to /activate-dev-func?id=<apache_version> -->
+
+    <footer>© 2026 National Administration Portal</footer>
+
+</html>
+

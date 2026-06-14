@@ -1,0 +1,153 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f4f7;
+    color: #1a1a1a;
+}
+
+/* Top header bar */
+header {
+    background-color: #003366;
+    color: white;
+    padding: 18px 30px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Main container */
+.container {
+    width: 85%;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border: 1px solid #d9d9d9;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+/* Links */
+a {
+    color: #003366;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Buttons */
+button {
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #002244;
+}
+
+/* Inputs */
+input {
+    padding: 8px;
+    width: 250px;
+    border: 1px solid #ccc;
+}
+
+/* Fake government panels */
+.panel {
+    border: 1px solid #d0d7de;
+    padding: 15px;
+    margin: 10px 0;
+    background: #fafafa;
+}
+
+/* Footer */
+footer {
+    margin-top: 50px;
+    padding: 15px;
+    background: #003366;
+    color: white;
+    text-align: center;
+    font-size: 13px;
+}
+
+.login-card {
+    background: white;
+    max-width: 450px;
+    margin: 60px auto;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.login-card h2 {
+    margin-top: 0;
+    color: #0b3d91;
+    margin-bottom: 10px;
+}
+
+.login-text {
+    color: #555;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.login-form .form-group {
+    margin-bottom: 20px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #374151;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #0b3d91;
+    box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.15);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #0b3d91;
+    color: white;
+    border: none;
+    border-radius: 2px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #082c66;
+}
+
+.error-box {
+    background: #fdecea;
+    color: #b42318;
+    border: 1px solid #f5c2c0;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+.logo  {
+    color: black;
+}
+.subtitle {
+    color: #555;
+
+}

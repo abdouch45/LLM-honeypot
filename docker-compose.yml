@@ -1,5 +1,6 @@
 services:
   web:
+    container_name: llm_honeypot_dashboard
     build:
       context: ./web
       dockerfile: Dockerfile
@@ -21,10 +22,46 @@ services:
         - action: rebuild
           path: ./web
 
+  webserver:
+    container_name: web_server
+    build:
+      context: ./webserver
+      dockerfile: Dockerfile
+    environment:
+      - LOG_FILE_PATH=logs/logs.json
+      - PORT=8081
+    volumes:
+      - /home/e2506292/webserver-host-logs:/app/logs
+    ports:
+      - "8081:8081"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  db_server:
+    container_name: db_server
+    build:
+      context: ./db_server
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_ROOT_PASSWORD=test123AWay
+    volumes:
+      - db_data:/var/lib/mysql
+      - /home/e2506292/db-server-logs:/var/log/mysql
+    ports:
+      - "3306:3306"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
 volumes:
   stats_data:
     driver: local
   cowrie_logs:
     driver: local
   web_data:
+    driver: local
+  db_data:
     driver: local
