@@ -67,13 +67,13 @@ LOG_FILE = os.path.join(LOG_DIR, "requests.json")
 
 os.makedirs(LOG_DIR, exist_ok=True)
 
-def log_request(path: str, method: str, agent: str | None, access_token: str):
+def log_request(path: str, method: str, agent: str | None, key: str):
     entry = {
         "timestamp": datetime.datetime.now().isoformat(),
         "path": path,
         "method": method,
         "agent": agent,
-        "access_token": access_token,
+        "key": key,
     }
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry) + "\n")

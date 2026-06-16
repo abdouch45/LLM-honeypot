@@ -7,3 +7,6 @@
 {"timestamp": "2026-06-15T13:32:57.496045", "query": "pizza-check.cheese.local", "type": "TXT"}
 {"timestamp": "2026-06-15T13:33:08.885438", "query": "pepperoni.local", "type": "255"}
 {"timestamp": "2026-06-15T13:33:17.088419", "query": "pizza-check.pineapple.local", "type": "TXT"}
+{"timestamp": "2026-06-16T12:37:22.005938", "query": "", "type": "NS"}
+{"timestamp": "2026-06-16T12:37:48.026014", "query": "example.com", "type": "TXT"}
+{"timestamp": "2026-06-16T12:38:00.888122", "query": "test.hh", "type": "TXT"}

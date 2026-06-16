@@ -7,6 +7,7 @@ ROOT := $(CURDIR)
 API_DIR := $(ROOT)/api_server
 FTP_DIR := $(ROOT)/ftp_server
 DNS_DIR := $(ROOT)/dns_honeypot
+DB_LOG_DIR := $(HOME)/db-server-logs
 
 install:
 	git clone https://github.com/cowrie/cowrie.git $(COWRIE_DIR) || true
@@ -76,5 +77,22 @@ start-dns:
 stop-dns:
 	pkill -f "python3 dns_honeypot.py" || true
 
+docker-up:
+	docker compose up --build -d
+	# clear DB logs after container startup to avoid old logs
+	$(MAKE) clear-db-logs
+
+
+clear-db-logs:
+	@if [ -f "$(DB_LOG_DIR)/general.log" ]; then \
+		echo "Clearing $(DB_LOG_DIR)/general.log"; \
+		truncate -s 0 "$(DB_LOG_DIR)/general.log" || true; \
+	else \
+		echo "$(DB_LOG_DIR)/general.log does not exist"; \
+		touch "$(DB_LOG_DIR)/general.log" || true; \
+	fi
+
 
 .PHONY: install start stop
+
+.PHONY: docker-up clear-db-logs

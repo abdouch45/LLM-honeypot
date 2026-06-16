@@ -177,3 +177,15 @@
 {"timestamp": "2026-06-15T19:41:07.107164", "client_ip": "172.17.0.2", "command": "EPSV", "args": ""}
 {"timestamp": "2026-06-15T19:41:07.108399", "client_ip": "172.17.0.2", "command": "PASV", "args": ""}
 {"timestamp": "2026-06-15T19:41:07.110567", "client_ip": "172.17.0.2", "command": "LIST", "args": ""}
+{"timestamp": "2026-06-16T12:35:00.383134", "client_ip": "172.17.0.2", "command": "USER", "args": "aa"}
+{"timestamp": "2026-06-16T12:35:02.184377", "client_ip": "172.17.0.2", "command": "PASS", "args": "aa"}
+{"timestamp": "2026-06-16T12:35:02.185504", "client_ip": "172.17.0.2", "command": "SYST", "args": ""}
+{"timestamp": "2026-06-16T12:35:02.186381", "client_ip": "172.17.0.2", "command": "FEAT", "args": ""}
+{"timestamp": "2026-06-16T12:35:05.047058", "client_ip": "172.17.0.2", "command": "EPSV", "args": ""}
+{"timestamp": "2026-06-16T12:35:05.048212", "client_ip": "172.17.0.2", "command": "PASV", "args": ""}
+{"timestamp": "2026-06-16T12:35:05.050279", "client_ip": "172.17.0.2", "command": "LIST", "args": ""}
+{"timestamp": "2026-06-16T12:35:30.160165", "client_ip": "172.17.0.2", "command": "PASV", "args": ""}
+{"timestamp": "2026-06-16T12:35:30.162535", "client_ip": "172.17.0.2", "command": "LIST", "args": "--key=washinton"}
+{"timestamp": "2026-06-16T12:35:57.602257", "client_ip": "172.17.0.2", "command": "PASV", "args": ""}
+{"timestamp": "2026-06-16T12:35:57.604594", "client_ip": "172.17.0.2", "command": "LIST", "args": "--key=washington"}
+{"timestamp": "2026-06-16T12:36:14.944803", "client_ip": "172.17.0.2", "command": "QUIT", "args": ""}
