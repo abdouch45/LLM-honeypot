@@ -1,0 +1,9 @@
+{"timestamp": "2026-06-15T13:31:02.507123", "query": "example.com", "type": "TXT"}
+{"timestamp": "2026-06-15T13:32:00.589142", "query": "example.com", "type": "TXT"}
+{"timestamp": "2026-06-15T13:32:09.417924", "query": "pizza-check.pepperoni.local", "type": "255"}
+{"timestamp": "2026-06-15T13:32:25.882500", "query": "pizza-check.pepperoni.local", "type": "TXT"}
+{"timestamp": "2026-06-15T13:32:39.893466", "query": "pizza-check.pepperoni.local", "type": "A"}
+{"timestamp": "2026-06-15T13:32:48.847010", "query": "example.com", "type": "252"}
+{"timestamp": "2026-06-15T13:32:57.496045", "query": "pizza-check.cheese.local", "type": "TXT"}
+{"timestamp": "2026-06-15T13:33:08.885438", "query": "pepperoni.local", "type": "255"}
+{"timestamp": "2026-06-15T13:33:17.088419", "query": "pizza-check.pineapple.local", "type": "TXT"}

@@ -2,9 +2,6 @@
 
 <img width="1279" alt="image" src="https://github.com/user-attachments/assets/49476f2b-8515-47ee-b432-5fc49e9c21ee">
 
-🔗 **Dashboard:** https://ai-honeypot.palisaderesearch.org
-
-📄 **Paper:** https://arxiv.org/abs/2410.13919
 
 This project extends the Cowrie SSH honeypot to detect and analyze LLM-driven hacking agents.
 
@@ -21,14 +18,14 @@ Detection uses prompt injections tested across multiple LLM models to identify t
 - Indirect verification keys requiring reasoning
 - Multi-stage progression to confirm agent behavior
 
-## Setup
+## Setup for ssh service
 
 ```bash
 make install && make enable && make start
 ```
 
-## Web Dashboard
+## other services
 
 ```bash
-docker compose up  # generates /www/main/index.html
+docker compose up -d --build  # generates docker containers for dashboard, mysql server and webserver(please change the paths accorinding to your system) 
 ```
