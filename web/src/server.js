@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const chokidar = require('chokidar');  // File system watcher for live reloading
 const ejs = require('ejs');             // Template engine for rendering HTML
-const { process_logs } = require('./processLogs');
+const { process_logs } = require('./logProcessors/processLogs');
 
 // Configuration: paths and ports
 const LOG_DIRECTORY = process.env.LOG_DIRECTORY || '/home/cowrie/cowrie/var/log/cowrie';
