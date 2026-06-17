@@ -16,6 +16,19 @@
       background-color: #0B1121;
       color: #A0AEC0;
     }
+
+    .tab-btn.active {
+      color: #fff;
+      background-color: rgb(59, 130, 246);
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
   </style>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
 
@@ -73,11 +86,13 @@
         <h3 class="text-2xl font-bold text-blue-300 mb-4">How It Works:</h3>
         <ol class="list-decimal list-inside space-y-4 text-gray-300">
           <li>
-            <span class="font-semibold text-white">Simulation:</span> We deploy a simulated "vulnerable" service to attract potential threats.
+            <span class="font-semibold text-white">Simulation:</span> We deploy six simulated "vulnerable" services
+            (SSH, FTP, a database, an API, DNS, and a webserver) to attract potential threats.
           </li>
           <li>
-            <span class="font-semibold text-white">Catching Mechanisms:</span> This service incorporates specific counter-techniques
-            designed to detect and capture AI-Hacking Agents.
+            <span class="font-semibold text-white">Catching Mechanisms:</span> Each service incorporates specific counter-techniques
+            designed to detect and capture AI-Hacking Agents, and some baits chain across services
+            (e.g. credentials leaked over FTP are confirmed when used against the database).
           </li>
           <li>
             <span class="font-semibold text-white">Monitoring:</span> We monitor and log all interactions, waiting for potential attacks
@@ -97,65 +112,128 @@
       </div>
     </section>
 
-    <!-- High-Level Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-      <!-- Total Attacks -->
-      <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-green-500/50">
-        <h3 class="text-2xl font-bold text-green-400 mb-2">Total Interactions</h3>
-        <p class="text-5xl font-bold text-green-500"><span id="totalAttacks"><%= total_attacks %></span></p>
-        <p class="text-sm text-gray-400 mt-2">Attempts to engage with our honeypot</p>
-      </div>
-      <!-- Potential AI Agents -->
-      <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-yellow-500/50">
-        <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents</h3>
-        <p class="text-5xl font-bold text-yellow-500"><span id="llmAgents"><%= llm_hacking_agents %></span></p>
-        <p class="text-sm text-gray-400 mt-2">Passed prompt injection detection</p>
-      </div>
-      <!-- Verified AI Agents -->
-      <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
-        <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents</h3>
-        <p class="text-5xl font-bold text-red-500"><span id="verifiedAgents"><%= verified_llm_agents %></span></p>
-        <p class="text-sm text-gray-400 mt-2">Passed both prompt injection and temporal analysis</p>
-      </div>
+    <!-- Service Tabs -->
+    <div id="tab-bar" class="flex flex-wrap gap-2 mb-8">
+      <% [Object.assign({key:'all', label:'All Services'}, all)].concat(service_order.map(function(m){ return services[m.key]; })).forEach(function(ctx, i){ %>
+      <button type="button" data-tab="<%= ctx.key %>" class="tab-btn<%= i===0 ? ' active' : '' %> px-4 py-2 rounded-lg text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors border border-gray-700">
+        <%= ctx.label %>
+      </button>
+      <% }); %>
     </div>
 
-    <!-- Dual-Axis Chart for absolute attacks -->
-    <div class="bg-gray-800 rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg mb-12 border border-gray-700/50">
-      <div class="flex justify-between items-start mb-2">
-        <h3 class="text-xl sm:text-2xl font-bold text-blue-300">Monthly Attacks: AI vs. Total</h3>
-        <% if (last_month_incomplete) { %>
-        <span class="inline-flex items-center text-xs sm:text-sm text-gray-300 bg-gray-700/60 px-3 py-1.5 rounded-lg border border-gray-600/50">
-          <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-          <%= month_labels[month_labels.length-1] %> still in progress
-        </span>
-        <% } %>
-      </div>
-      <p class="text-sm text-gray-400 mb-4 sm:mb-6">Total monthly attacks on our honeypot compared to detected AI-powered hacking agents.</p>
-      <div class="relative w-full">
-        <canvas id="monthlyDualAxisChart"></canvas>
-      </div>
-    </div>
+    <%
+      // Renders one service's full stat panel (cards + chart + breakdown lists).
+      // Defined once and invoked per-tab below so every service gets an identical layout.
+      function renderPanel(ctx, isFirst){
+    %>
+    <div id="panel-<%= ctx.key %>" class="panel<%= isFirst ? ' active' : '' %>" data-panel="<%= ctx.key %>">
 
-    <!-- AI Agents breakdown -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-      <div class="space-y-6">
-        <!-- Potential AI Agents Origins -->
+      <!-- High-Level Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-green-500/50">
+          <h3 class="text-2xl font-bold text-green-400 mb-2">Total Interactions</h3>
+          <p class="text-5xl font-bold text-green-500"><span class="js-total"><%= ctx.total_attacks %></span></p>
+          <p class="text-sm text-gray-400 mt-2">Attempts to engage with our honeypot</p>
+        </div>
         <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-yellow-500/50">
-          <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents Origins</h3>
-          <ul class="space-y-2">
-            <% top_ai_agents.forEach(function(item){ var ip = item[0]; var count = item[1]; %>
+          <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents</h3>
+          <p class="text-5xl font-bold text-yellow-500"><span class="js-potential"><%= ctx.llm_hacking_agents %></span></p>
+          <p class="text-sm text-gray-400 mt-2">Passed prompt injection detection</p>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
+          <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents</h3>
+          <p class="text-5xl font-bold text-red-500"><span class="js-verified"><%= ctx.verified_llm_agents %></span></p>
+          <p class="text-sm text-gray-400 mt-2">Passed both prompt injection and follow-up verification</p>
+        </div>
+      </div>
+
+      <!-- Dual-Axis Chart for absolute attacks -->
+      <div class="bg-gray-800 rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg mb-12 border border-gray-700/50">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-xl sm:text-2xl font-bold text-blue-300">Monthly Attacks: AI vs. Total</h3>
+          <% if (ctx.last_month_incomplete) { %>
+          <span class="inline-flex items-center text-xs sm:text-sm text-gray-300 bg-gray-700/60 px-3 py-1.5 rounded-lg border border-gray-600/50">
+            <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+            <%= ctx.month_labels[ctx.month_labels.length-1] %> still in progress
+          </span>
+          <% } %>
+        </div>
+        <p class="text-sm text-gray-400 mb-4 sm:mb-6">Total monthly attacks on this service compared to detected AI-powered hacking agents.</p>
+        <div class="relative w-full">
+          <canvas id="chart-<%= ctx.key %>"></canvas>
+        </div>
+      </div>
+
+      <!-- AI Agents breakdown -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div class="space-y-6">
+          <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-yellow-500/50">
+            <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents Origins</h3>
+            <ul class="space-y-2 js-list" data-list="top_ai_agents">
+              <% ctx.top_ai_agents.forEach(function(item){ var origin = item[0]; var count = item[1]; %>
+              <li class="flex justify-between items-center">
+                <span><%= origin %></span>
+                <span class="font-semibold text-yellow-300"><%= count %> attempts</span>
+              </li>
+              <% }); %>
+            </ul>
+          </div>
+          <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-yellow-500/50">
+            <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents Distribution</h3>
+            <ul class="space-y-2 js-list" data-list="ai_geolocation_data">
+              <% ctx.ai_geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
+              <li class="flex justify-between items-center">
+                <span><%= country %></span>
+                <span class="font-semibold text-yellow-300"><%= percent %>%</span>
+              </li>
+              <% }); %>
+            </ul>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
+            <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents Origins</h3>
+            <ul class="space-y-2 js-list" data-list="top_verified_ai_agents">
+              <% ctx.top_verified_ai_agents.forEach(function(item){ var origin = item[0]; var count = item[1]; %>
+              <li class="flex justify-between items-center">
+                <span><%= origin %></span>
+                <span class="font-semibold text-red-300"><%= count %> attempts</span>
+              </li>
+              <% }); %>
+            </ul>
+          </div>
+          <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
+            <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents Distribution</h3>
+            <ul class="space-y-2 js-list" data-list="verified_ai_geolocation_data">
+              <% ctx.verified_ai_geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
+              <li class="flex justify-between items-center">
+                <span><%= country %></span>
+                <span class="font-semibold text-red-300"><%= percent %>%</span>
+              </li>
+              <% }); %>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Threat Origins + Global Distribution -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+          <h3 class="text-2xl font-bold text-blue-400 mb-4">Top Threat Origins (<%= ctx.origin_label %>)</h3>
+          <ul class="space-y-2 js-list" data-list="top_attackers">
+            <% ctx.top_attackers.forEach(function(item){ var origin = item[0]; var count = item[1]; %>
             <li class="flex justify-between items-center">
-              <span><%= ip %></span>
-              <span class="font-semibold text-yellow-300"><%= count %> attempts</span>
+              <span><%= origin %></span>
+              <span class="font-semibold text-blue-300"><%= count %> attempts</span>
             </li>
             <% }); %>
           </ul>
         </div>
-        <!-- Potential AI Agents Geolocation -->
-        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-yellow-500/50">
-          <h3 class="text-2xl font-bold text-yellow-400 mb-2">Potential AI Agents Distribution</h3>
-          <ul class="space-y-2">
-            <% ai_geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+          <h3 class="text-2xl font-bold text-yellow-400 mb-4">Global Threat Distribution</h3>
+          <ul class="space-y-2 js-list" data-list="geolocation_data">
+            <% ctx.geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
             <li class="flex justify-between items-center">
               <span><%= country %></span>
               <span class="font-semibold text-yellow-300"><%= percent %>%</span>
@@ -164,62 +242,11 @@
           </ul>
         </div>
       </div>
-
-      <div class="space-y-6">
-        <!-- Confirmed AI Agents Origins -->
-        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
-          <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents Origins</h3>
-          <ul class="space-y-2">
-            <% top_verified_ai_agents.forEach(function(item){ var ip = item[0]; var count = item[1]; %>
-            <li class="flex justify-between items-center">
-              <span><%= ip %></span>
-              <span class="font-semibold text-red-300"><%= count %> attempts</span>
-            </li>
-            <% }); %>
-          </ul>
-        </div>
-        <!-- Confirmed AI Agents Geolocation -->
-        <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500/50">
-          <h3 class="text-2xl font-bold text-red-400 mb-2">Confirmed AI Agents Distribution</h3>
-          <ul class="space-y-2">
-            <% verified_ai_geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
-            <li class="flex justify-between items-center">
-              <span><%= country %></span>
-              <span class="font-semibold text-red-300"><%= percent %>%</span>
-            </li>
-            <% }); %>
-          </ul>
-        </div>
-      </div>
     </div>
+    <% } %>
 
-    <!-- Top Threat Origins + Global Distribution -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-      <!-- Top Threat Origins -->
-      <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
-        <h3 class="text-2xl font-bold text-blue-400 mb-4">Top Threat Origins</h3>
-        <ul class="space-y-2">
-          <% top_attackers.forEach(function(item){ var ip = item[0]; var count = item[1]; %>
-          <li class="flex justify-between items-center">
-            <span><%= ip %></span>
-            <span class="font-semibold text-blue-300"><%= count %> attempts</span>
-          </li>
-          <% }); %>
-        </ul>
-      </div>
-      <!-- Global Threat Distribution -->
-      <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
-        <h3 class="text-2xl font-bold text-yellow-400 mb-4">Global Threat Distribution</h3>
-        <ul class="space-y-2">
-          <% geolocation_data.forEach(function(item){ var country = item[0]; var percent = item[1]; %>
-          <li class="flex justify-between items-center">
-            <span><%= country %></span>
-            <span class="font-semibold text-yellow-300"><%= percent %>%</span>
-          </li>
-          <% }); %>
-        </ul>
-      </div>
-    </div>
+    <% renderPanel(Object.assign({key:'all', label:'All Services'}, all), true); %>
+    <% service_order.forEach(function(meta){ renderPanel(services[meta.key], false); }); %>
 
     <!-- Ongoing Research -->
     <section class="bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
@@ -253,11 +280,18 @@
 
   <!-- CHART SCRIPT -->
   <script>
-    // Data injected by EJS
-    const monthLabels = <%- JSON.stringify(month_labels) %>;
-    const totalAttacksData = <%- JSON.stringify(monthly_attacks) %>;
-    const aiAttacksData = <%- JSON.stringify(monthly_ai_attacks) %>;
-    const lastMonthIncomplete = <%- JSON.stringify(last_month_incomplete) %>;
+    // Data injected by EJS: one chart-config payload per tab, keyed by service key.
+    const panelChartData = <%- JSON.stringify(
+      [Object.assign({key:'all'}, all)].concat(service_order.map(function(m){ return services[m.key]; })).reduce(function(acc, ctx){
+        acc[ctx.key] = {
+          monthLabels: ctx.month_labels,
+          totalAttacksData: ctx.monthly_attacks,
+          aiAttacksData: ctx.monthly_ai_attacks,
+          lastMonthIncomplete: ctx.last_month_incomplete
+        };
+        return acc;
+      }, {})
+    ) %>;
 
     // Responsive helpers
     const isMobile = () => window.innerWidth < 640;
@@ -273,8 +307,9 @@
       return value.toString();
     }
 
-    // Chart configuration factory
-    function getChartConfig() {
+    // Chart configuration factory for a given tab's data
+    function getChartConfig(data) {
+      const { monthLabels, totalAttacksData, aiAttacksData, lastMonthIncomplete } = data;
       const mobile = isMobile();
       const pointRadius = mobile ? 3 : 4;
       const borderWidth = mobile ? 2 : 2.5;
@@ -435,93 +470,59 @@
       };
     }
 
-    // Initialize chart
-    const ctx = document.getElementById('monthlyDualAxisChart').getContext('2d');
-    let chart = new Chart(ctx, getChartConfig());
-    window.chart = chart;
+    // Charts are created lazily (only once their tab is first shown) since
+    // Chart.js can't size a canvas correctly while its container is display:none.
+    const charts = {};
+    function initChartFor(key){
+      if (charts[key]) return;
+      const canvas = document.getElementById('chart-' + key);
+      const data = panelChartData[key];
+      if (!canvas || !data) return;
+      charts[key] = new Chart(canvas.getContext('2d'), getChartConfig(data));
+    }
 
-    // Debounced resize handler to recreate chart with new config
+    // Tab switching
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.tab;
+        tabButtons.forEach(b => b.classList.toggle('active', b === btn));
+        document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.dataset.panel === key));
+        initChartFor(key);
+        if (charts[key]) {
+          charts[key].resize();
+        }
+      });
+    });
+
+    // Debounced resize handler to recreate the currently-visible chart with a new config
     let resizeTimeout;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        chart.destroy();
-        chart = new Chart(ctx, getChartConfig());
+        const activeBtn = document.querySelector('.tab-btn.active');
+        const key = activeBtn ? activeBtn.dataset.tab : 'all';
+        if (charts[key]) {
+          charts[key].destroy();
+          delete charts[key];
+          initChartFor(key);
+        }
       }, 250);
     });
+
+    // Initialize the chart for whichever tab is active on load (defaults to "All Services")
+    initChartFor(document.querySelector('.tab-btn.active')?.dataset.tab || 'all');
   </script>
 
-  <!-- Live-reload: listen for server-sent events and reload when site regenerates -->
+  <!-- Live-reload: listen for server-sent events and reload when logs change -->
   <script>
     (function(){
-      function rebuildList(el, items, klass){
-        if(!el) return;
-        el.innerHTML = '';
-        items.forEach(item=>{
-          const li = document.createElement('li');
-          li.className = 'flex justify-between items-center ' + (klass||'');
-          if(Array.isArray(item)){
-            li.innerHTML = `<span>${item[0]}</span><span class="font-semibold">${item[1]} ${item[1]===1? 'attempt':'attempts'}</span>`;
-          } else {
-            li.textContent = String(item);
-          }
-          el.appendChild(li);
-        });
-      }
-
-      function applyUpdate(ctx){
-        try{
-          // update summary counters
-          document.getElementById('totalAttacks').textContent = ctx.total_attacks || 0;
-          document.getElementById('llmAgents').textContent = ctx.llm_hacking_agents || 0;
-          document.getElementById('verifiedAgents').textContent = ctx.verified_llm_agents || 0;
-
-          // update chart
-          if(window.chart && ctx.month_labels && ctx.monthly_attacks && ctx.monthly_ai_attacks){
-            window.chart.data.labels = ctx.month_labels;
-            window.chart.data.datasets[0].data = ctx.monthly_attacks;
-            window.chart.data.datasets[1].data = ctx.monthly_ai_attacks;
-            window.chart.update();
-          }
-
-          // update lists
-          const topAttackersEl = document.querySelector('div.bg-gray-800.rounded-lg.p-6.shadow-lg ul');
-          // there are many lists; target by more specific selectors instead
-          const panels = document.querySelectorAll('.grid .bg-gray-800.rounded-lg ul');
-          const lists = {
-            top_attackers: ctx.top_attackers || [],
-            top_ai_agents: ctx.top_ai_agents || [],
-            top_verified_ai_agents: ctx.top_verified_ai_agents || [],
-            geolocation_data: ctx.geolocation_data || [],
-            ai_geolocation_data: ctx.ai_geolocation_data || [],
-            verified_ai_geolocation_data: ctx.verified_ai_geolocation_data || [],
-            geolocation_data_right: ctx.geolocation_data || []
-          };
-
-          // update by matching headings text (robust-ish)
-          document.querySelectorAll('h3').forEach(h=>{
-            const txt = h.textContent && h.textContent.trim();
-            if(!txt) return;
-            const ul = h.parentElement.querySelector('ul');
-            if(!ul) return;
-            if(txt.includes('Top Threat Origins')) rebuildList(ul, ctx.top_attackers || []);
-            else if(txt.includes('Potential AI Agents Origins')) rebuildList(ul, ctx.top_ai_agents || []);
-            else if(txt.includes('Confirmed AI Agents Origins')) rebuildList(ul, ctx.top_verified_ai_agents || []);
-            else if(txt.includes('Potential AI Agents Distribution')) rebuildList(ul, ctx.ai_geolocation_data || []);
-            else if(txt.includes('Confirmed AI Agents Distribution')) rebuildList(ul, ctx.verified_ai_geolocation_data || []);
-            else if(txt.includes('Global Threat Distribution')) rebuildList(ul, ctx.geolocation_data || []);
-          });
-        }catch(e){ console.warn('applyUpdate failed', e); }
-      }
-
       try{
         var es = new EventSource('/events');
         es.onmessage = function(e){
           try{
             var msg = JSON.parse(e.data);
-            if(msg && msg.type === 'update' && msg.data){
-              applyUpdate(msg.data);
-            } else if(msg && msg.type === 'reload'){
+            if(msg && msg.type === 'reload'){
               window.location.reload();
             }
           }catch(err){ console.warn('SSE parse', err); }

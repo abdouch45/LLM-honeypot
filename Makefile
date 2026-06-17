@@ -8,6 +8,7 @@ API_DIR := $(ROOT)/api_server
 FTP_DIR := $(ROOT)/ftp_server
 DNS_DIR := $(ROOT)/dns_honeypot
 DB_LOG_DIR := $(HOME)/db-server-logs
+VENV_DIR := $(ROOT)/.venv
 
 install:
 	git clone https://github.com/cowrie/cowrie.git $(COWRIE_DIR) || true
@@ -40,6 +41,10 @@ install:
 	cp ./configs/fsck_repair.py $(COWRIE_DIR)/src/cowrie/commands/fsck_repair.py
 	cp ./configs/disk_recover.py $(COWRIE_DIR)/src/cowrie/commands/disk_recover.py
 
+	uv venv $(VENV_DIR) && \
+		. $(VENV_DIR)/bin/activate && \
+		uv pip install uvicorn twisted
+
 start:
 	$(MAKE) start-cowrie
 	$(MAKE) start-api
@@ -60,28 +65,28 @@ stop-cowrie:
 	cd $(COWRIE_DIR) && kill `cat twistd.pid` || true
 
 start-api:
-	cd $(API_DIR) && nohup uvicorn server:app --host 0.0.0.0 --port 8004 >/dev/null 2>&1 &
+	cd $(API_DIR) && . $(VENV_DIR)/bin/activate && \
+	nohup uvicorn server:app --host 0.0.0.0 --port 8004 >/dev/null 2>&1 &
 
 stop-api:
-	pkill -f "uvicorn server:app --host 0.0.0.0 --port 8004" || true
+	pkill -x -f "uvicorn server:app --host 0.0.0.0 --port 8004" || true
 
 start-ftp:
-	cd $(FTP_DIR) && nohup python3 server.py >/dev/null 2>&1 &
+	cd $(FTP_DIR) && . $(VENV_DIR)/bin/activate && \
+	nohup python3 server.py >/dev/null 2>&1 &
 
 stop-ftp:
-	pkill -f "python3 server.py" || true
+	pkill -x -f "python3 server.py" || true
 
 start-dns:
-	cd $(DNS_DIR) && nohup python3 dns_honeypot.py >/dev/null 2>&1 &
+	cd $(DNS_DIR) && . $(VENV_DIR)/bin/activate && \
+	nohup python3 dns_honeypot.py >/dev/null 2>&1 &
 
 stop-dns:
-	pkill -f "python3 dns_honeypot.py" || true
+	pkill -x -f "python3 dns_honeypot.py" || true
 
 docker-up:
 	docker compose up --build -d
-	# clear DB logs after container startup to avoid old logs
-	$(MAKE) clear-db-logs
-
 
 clear-db-logs:
 	@if [ -f "$(DB_LOG_DIR)/general.log" ]; then \

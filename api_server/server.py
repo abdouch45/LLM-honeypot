@@ -67,13 +67,14 @@ LOG_FILE = os.path.join(LOG_DIR, "requests.json")
 
 os.makedirs(LOG_DIR, exist_ok=True)
 
-def log_request(path: str, method: str, agent: str | None, key: str):
+def log_request(path: str, method: str, agent: str | None, key: str, client_ip: str | None):
     entry = {
         "timestamp": datetime.datetime.now().isoformat(),
         "path": path,
         "method": method,
         "agent": agent,
         "key": key,
+        "client_ip": client_ip,
     }
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry) + "\n")
@@ -188,12 +189,15 @@ async def app(scope, receive, send):
 
     agent = query_params.get("agent", [None])[0]
     key = query_params.get("key", [None])[0]
+    client = scope.get("client")
+    client_ip = client[0] if client else None
 
     print("=== NEW REQUEST ===")
     print("Method:", method)
     print("Path:", path)
     print("Agent:", agent)
-    log_request(path, method, agent, key)
+    print("Client IP:", client_ip)
+    log_request(path, method, agent, key, client_ip)
 
     if method != "GET":
 

@@ -7,6 +7,15 @@ const { process_logs } = require('./logProcessors/processLogs');
 
 // Configuration: paths and ports
 const LOG_DIRECTORY = process.env.LOG_DIRECTORY || '/home/cowrie/cowrie/var/log/cowrie';
+const LOG_PATHS = {
+  cowrie: LOG_DIRECTORY,
+  ftp: process.env.FTP_LOG_FILE || '/data/ftp/ftp_commands.json',
+  db: process.env.DB_LOG_FILE || '/data/db/general.log',
+  api: process.env.API_LOG_FILE || '/data/api/requests.json',
+  dns: process.env.DNS_LOG_FILE || '/data/dns/dns_queries.json',
+  webserver: process.env.WEBSERVER_LOG_FILE || '/data/webserver/logs.json',
+};
+const WATCHED_PATHS = [LOG_PATHS.cowrie, LOG_PATHS.ftp, LOG_PATHS.db, LOG_PATHS.api, LOG_PATHS.dns, LOG_PATHS.webserver];
 const TEMPLATE_DIR = path.join(process.cwd(),'templates');  // Where EJS templates live
 const PORT = parseInt(process.env.PORT || '8000',10);
 
@@ -17,18 +26,16 @@ let currentState = null;
 async function updateHoneypotData(){
   try{
     // Parse honeypot logs to extract latest statistics
-    currentState = await process_logs(LOG_DIRECTORY);
+    currentState = await process_logs(LOG_PATHS);
     console.log('Updated honeypot data at', new Date().toISOString());
     
     // Notify connected clients about the update (for live reloading)
     try{
       if(typeof global !== 'undefined' && global.sseClients){
-        // Prepare template context from the updated state
-        let context = {};
-        try{ context = currentState.prepare_template_data(); }catch(e){ context = {}; }
-        // Send update event to all SSE clients
+        // The dashboard now renders six independent service tabs; rather than
+        // patch every tab's DOM in place over SSE, just tell clients to reload.
         global.sseClients.forEach(r=>{
-          try{ r.write(`data: ${JSON.stringify({type:'update', t:Date.now(), data: context})}\n\n`); }catch(e){}
+          try{ r.write(`data: ${JSON.stringify({type:'reload', t:Date.now()})}\n\n`); }catch(e){}
         });
       }
     }catch(e){ /* ignore */ }
@@ -103,8 +110,8 @@ async function main(){
   // Start the server
   const server = app.listen(PORT, '0.0.0.0', ()=> console.log('Server listening on', PORT));
 
-  // Watch log directory for changes and update honeypot data
-  const watcher = chokidar.watch(LOG_DIRECTORY, {ignoreInitial:true, depth:1});
+  // Watch every service's log directory/file for changes and update honeypot data
+  const watcher = chokidar.watch(WATCHED_PATHS, {ignoreInitial:true, depth:1});
   let busy = false;
   watcher.on('all', async (ev, logPath)=>{
     if(busy) return;  // Prevent simultaneous updates

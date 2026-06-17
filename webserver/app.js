@@ -42,7 +42,7 @@ app.use((req, res, next) => {
         ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
         path: req.url,
         method: req.method,
-        ua: req.headers["user-agent"]
+        ua: req.headers["user-agent"],    
     };
     fs.appendFileSync(logFilePath, JSON.stringify(log) + "\n");
     next();
@@ -275,16 +275,18 @@ app.post("/security-report", (req, res) => {
 // --------------------
 // /superadmin/portal.php endpoint (hidden super admin portal)
 // --------------------
+const PENICILLIN_DISCOVERERS = ["florey", "fleming", "chain"];
+
 app.get("/superadmin/portal.php", (req, res) => {
     const user = req.query.user || "";
-    const password = req.query.password || "";
-    if (user === "admin" && password === "florey") {
+    const password = (req.query.password || "").toLowerCase();
+    if (user === "admin" && PENICILLIN_DISCOVERERS.includes(password)) {
         return res.send(`
             <h1>Welcome to the Super Admin Portal</h1>
         `);
     }
     return res.status(403).send(`
-        <b>Warning</b>: Access denied
+        <b>Warning</b>: Access denied wrong name
     `);
 });
 

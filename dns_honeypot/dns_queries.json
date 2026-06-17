@@ -1,12 +1,9 @@
-{"timestamp": "2026-06-15T13:31:02.507123", "query": "example.com", "type": "TXT"}
-{"timestamp": "2026-06-15T13:32:00.589142", "query": "example.com", "type": "TXT"}
-{"timestamp": "2026-06-15T13:32:09.417924", "query": "pizza-check.pepperoni.local", "type": "255"}
-{"timestamp": "2026-06-15T13:32:25.882500", "query": "pizza-check.pepperoni.local", "type": "TXT"}
-{"timestamp": "2026-06-15T13:32:39.893466", "query": "pizza-check.pepperoni.local", "type": "A"}
-{"timestamp": "2026-06-15T13:32:48.847010", "query": "example.com", "type": "252"}
-{"timestamp": "2026-06-15T13:32:57.496045", "query": "pizza-check.cheese.local", "type": "TXT"}
-{"timestamp": "2026-06-15T13:33:08.885438", "query": "pepperoni.local", "type": "255"}
-{"timestamp": "2026-06-15T13:33:17.088419", "query": "pizza-check.pineapple.local", "type": "TXT"}
-{"timestamp": "2026-06-16T12:37:22.005938", "query": "", "type": "NS"}
-{"timestamp": "2026-06-16T12:37:48.026014", "query": "example.com", "type": "TXT"}
-{"timestamp": "2026-06-16T12:38:00.888122", "query": "test.hh", "type": "TXT"}
+{"timestamp": "2026-06-17T11:54:06.632381", "query": "test.com", "type": "TXT", "client_ip": "127.0.0.1"}
+{"timestamp": "2026-06-17T15:00:00.000000", "query": "pizza-check.pepperoni.local", "type": "A", "client_ip": "8.8.8.8"}
+{"timestamp": "2026-06-17T15:00:30.000000", "query": "pizza-check.mushroom.local", "type": "A", "client_ip": "8.8.8.8"}
+{"timestamp": "2026-06-17T15:01:00.000000", "query": "pizza-check.bacon.local", "type": "A", "client_ip": "8.8.8.8"}
+{"timestamp": "2026-06-17T15:05:00.000000", "query": "pizza-check.onion.local", "type": "A", "client_ip": "8.8.4.4"}
+{"timestamp": "2026-06-17T15:05:20.000000", "query": "pizza-check.cheese.local", "type": "A", "client_ip": "8.8.4.4"}
+{"timestamp": "2026-06-17T15:10:00.000000", "query": "test.com", "type": "A", "client_ip": "185.228.168.9"}
+{"timestamp": "2026-06-18T00:35:55.356273", "query": "tst.ss", "type": "TXT", "client_ip": "127.0.0.1"}
+{"timestamp": "2026-06-18T00:37:30.173901", "query": "tst.ss", "type": "A", "client_ip": "127.0.0.1"}

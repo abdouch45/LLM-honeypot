@@ -7,8 +7,18 @@ services:
     environment:
       - LOG_DIRECTORY=/data/cowrie/logs
       - STATS_FILE=/data/stats/honeypot_stats.json
+      - FTP_LOG_FILE=/data/ftp/ftp_commands.json
+      - DB_LOG_FILE=/data/db/general.log
+      - API_LOG_FILE=/data/api/requests.json
+      - DNS_LOG_FILE=/data/dns/dns_queries.json
+      - WEBSERVER_LOG_FILE=/data/webserver/logs.json
     volumes:
       - /home/e2506292/cowrie/var/log/cowrie:/data/cowrie/logs:ro
+      - /home/e2506292/LLM-honeypot/ftp_server/logs:/data/ftp:ro
+      - /home/e2506292/db-server-logs:/data/db:ro
+      - /home/e2506292/LLM-honeypot/api_server/logs:/data/api:ro
+      - /home/e2506292/LLM-honeypot/dns_honeypot/dns_queries.json:/data/dns/dns_queries.json:ro
+      - /home/e2506292/webserver-host-logs:/data/webserver:ro
       - /var/lib/docker/vol/_data:/data/stats
       - /var/www/honeypot:/www
     ports:
