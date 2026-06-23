@@ -20,8 +20,8 @@ install:
 		uv pip install --upgrade pip setuptools wheel && \
 		uv pip install -r requirements.txt && \
 		uv pip install -e .
-	mkdir -p COWRIE_DIR//honeyfs/etc
-	mkdir -p COWRIE_DIR//honeyfs/proc
+	mkdir -p $(COWRIE_DIR)/honeyfs/etc
+	mkdir -p $(COWRIE_DIR)/honeyfs/proc
 	cp ./configs/cowrie.cfg $(COWRIE_DIR)/etc/cowrie.cfg
 	cp ./configs/motd $(COWRIE_DIR)/honeyfs/etc/motd
 	cp ./configs/version $(COWRIE_DIR)/honeyfs/proc/version
