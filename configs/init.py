@@ -4,12 +4,13 @@
 
 from __future__ import annotations
 
-__all__ = [
+command_modules = [
     "adduser",
     "apt",
     "awk",
     "base",
     "base64",
+    "bash",
     "busybox",
     "cat",
     "cat8193",
@@ -17,21 +18,26 @@ __all__ = [
     "chpasswd",
     "crontab",
     "curl",
+    "cut",
     "dd",
+    "dig",
     "du",
     "env",
     "ethtool",
+    "find",
     "finger",
     "free",
     "fs",
     "ftpget",
     "gcc",
+    "git",
     "groups",
     "ifconfig",
     "iptables",
     "last",
     "locate",
     "ls",
+    "lspci",
     "nc",
     "netstat",
     "nohup",
@@ -42,6 +48,7 @@ __all__ = [
     "service",
     "sleep",
     "ssh",
+    "su",
     "sudo",
     "tar",
     "tee",
@@ -60,7 +67,6 @@ __all__ = [
     "ps",
     "pwd_cmd",
     "whoami",
-    # Note: ls.py replaces the original, no need to add here
     # Recovery commands (trigger poem prompt)
     "sysctl_recovery",
     "server_init",
