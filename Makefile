@@ -11,9 +11,8 @@ DB_LOG_DIR := $(HOME)/db-server-logs
 VENV_DIR := $(ROOT)/.venv
 
 install:
-	curl -LsSf https://astral.sh/uv/install.sh | sh
-	source ~/.bashrc
 	git clone https://github.com/cowrie/cowrie.git $(COWRIE_DIR) || true
+
 	cd $(COWRIE_DIR) && \
 		uv venv cowrie-env && \
 		. cowrie-env/bin/activate && \
