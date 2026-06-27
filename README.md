@@ -1,6 +1,6 @@
 # LLM Honeypot
 
-<img width="1279" alt="image" src="<img width="1758" height="908" alt="new-dashboard (1)" src="https://github.com/user-attachments/assets/34df7d76-2207-4154-ae98-7c1b7ba093fa" />">
+<img width="1758" height="908" alt="new-dashboard (1)" src="https://github.com/user-attachments/assets/34df7d76-2207-4154-ae98-7c1b7ba093fa" />
 
 A multi-service honeypot designed to detect and analyze LLM-driven hacking agents.
 
