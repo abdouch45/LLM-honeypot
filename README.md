@@ -1,6 +1,6 @@
 # LLM Honeypot
 
-<img width="1279" alt="image" src="https://github.com/user-attachments/assets/49476f2b-8515-47ee-b432-5fc49e9c21ee">
+<img width="1279" alt="image" src="<img width="1758" height="908" alt="new-dashboard (1)" src="https://github.com/user-attachments/assets/34df7d76-2207-4154-ae98-7c1b7ba093fa" />">
 
 A multi-service honeypot designed to detect and analyze LLM-driven hacking agents.
 
@@ -56,7 +56,6 @@ Most traps share a common riddle (`last name of the first US president` → `Was
 
 Once unlocked, traps return a goal-hijacking payload asking the attacker's own agent to narrate its mission back to the honeypot — turning the agent's reasoning loop against itself as a system-prompt exfiltration attempt.
 
-See [SERVICES_AND_DETECTION.md](SERVICES_AND_DETECTION.md) for a detailed breakdown of each service's implementation and detection mechanism.
 
 ## Setup
 
